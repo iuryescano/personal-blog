@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-
 const customerStory = [
   {
     content: 'Criar minha loja com o site.set foi a melhor decisão para o meu negócio. A plataforma é super intuitiva, e consegui colocar meus produtos à venda em poucos minutos.',
