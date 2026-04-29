@@ -7,17 +7,17 @@ export const Search = () => {
   const q = router.query.q as string;
   const [query, setQuery] = useState('');
 
-  const handleSearch = useCallback((event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSearch = useCallback((event: React.FormEvent) => { //
+    event.preventDefault(); // Evita o comportamento padrão do formulário
 
-    if (query.trim()) {
-      router.push(`/blog?q=${encodeURIComponent(query)}`);
+    if (query.trim()) { // Verifica se a consulta não está vazia
+      router.push(`/blog?q=${encodeURIComponent(query)}`); // Redireciona para a página de resultados de busca com a consulta como parâmetro
     }
   }, [query, router]);
 
-  useEffect(() => {
-    setQuery(q)
-  }, [q])
+  useEffect(() => { // Sincroniza o estado da consulta com o parâmetro de consulta na URL
+    setQuery(q) // Atualiza o estado da consulta com o valor do parâmetro de consulta na URL
+  }, [q]) // Sempre que o parâmetro de consulta 'q' na URL mudar, o estado 'query' será atualizado para refletir essa mudança. Isso garante que o campo de busca mostre a consulta atual mesmo quando o usuário navega para trás ou para frente no histórico do navegador.
 
   return (
     <form className="relative" onSubmit={handleSearch}>
