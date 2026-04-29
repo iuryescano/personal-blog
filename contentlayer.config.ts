@@ -1,0 +1,20 @@
+import { defineDocumentType, makeSource } from "contentlayer2/source-files";
+
+export const Post = defineDocumentType(() => ({
+  name: "Post",
+  filePathPattern: `**/*.{md,mdx}`,
+  fields: {
+    title: { type: "string", required: true },
+    description: { type: "string", required: true },
+    date: { type: "date", required: true },
+    image: { type: "string", required: true },
+  },
+  computedFields: {
+    slug: {
+      type: "string",
+      resolve: (doc) => doc._raw.sourceFileName.replace(/\.(md|mdx)$/, ""),
+    },
+  }
+}));
+
+export default makeSource({ contentDirPath: "posts", documentTypes: [Post] });

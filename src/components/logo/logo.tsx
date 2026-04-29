@@ -9,6 +9,7 @@ export const Logo = () => {
         alt="Logo Website"
         width={116}
         height={32}
+        className="h-auto w-auto"
       />
     </Link>
   )
