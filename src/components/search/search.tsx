@@ -1,11 +1,12 @@
 import { SearchIcon } from "lucide-react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { CircleX } from "lucide-react";
+import { useCallback } from "react";
+import { cn } from "@/lib/utils";
 
 export const Search = () => {
   const router = useRouter();
-  const q = router.query.q as string;
-  const [query, setQuery] = useState('');
+  const query = (router.query.q as string) || ""; // Obtém o valor da consulta de busca a partir dos parâmetros da URL, ou define como string vazia se não estiver presente
 
   const handleSearch = useCallback((event: React.FormEvent) => { //
     event.preventDefault(); // Evita o comportamento padrão do formulário
@@ -15,21 +16,40 @@ export const Search = () => {
     }
   }, [query, router]);
 
-  useEffect(() => { // Sincroniza o estado da consulta com o parâmetro de consulta na URL
-    setQuery(q) // Atualiza o estado da consulta com o valor do parâmetro de consulta na URL
-  }, [q]) // Sempre que o parâmetro de consulta 'q' na URL mudar, o estado 'query' será atualizado para refletir essa mudança. Isso garante que o campo de busca mostre a consulta atual mesmo quando o usuário navega para trás ou para frente no histórico do navegador.
+  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newQuery = event.target.value;
+
+    router.push(`/blog?q=${encodeURIComponent(newQuery)}`, undefined, {//push a nova URL com a consulta atualizada
+      shallow: true, // Atualiza a URL sem recarregar a página
+      scroll: false, // Evita o scroll para o topo da página
+    });
+  }
+
+  const resetSearch = () => {
+    router.push("/blog", undefined, {
+      shallow: true, // Atualiza a URL sem recarregar a página
+      scroll: false, // Evita o scroll para o topo da página
+    });
+  }
 
   return (
-    <form className="relative" onSubmit={handleSearch}>
-      <SearchIcon className="text-gray-300 absolute left-3 top-1/2  -translate-y-1/2 h-4 w-4  transition-colors duration-200"/>
+    <form className="relative group w-full md:w-60" onSubmit={handleSearch}>
+      <SearchIcon 
+        className={cn('text-gray-300 absolute left-3 top-1/2  -translate-y-1/2 h-4 w-4 transition-colors duration-200 group-focus-within:text-blue-300', query ? 'text-blue-300' : ' ')}
+      />
       <input 
         type="text"
+        value={query}
         placeholder="Buscar"
-        onChange={(event) => setQuery(event.target.value)}
-        className="h-10 w-72 bg-transparent border border-gray-400 pl-9 text-gray-100 rounded-md 
+        onChange={handleQueryChange}
+        className="w-full h-10 md:w-60 bg-transparent border border-gray-400 pl-9 text-gray-100 rounded-md 
         text-body-sm outline-none transition-all duration-200 focus-within:border-blue-300 focus-within:ring-1 
         focus-within:ring-blue-300 placeholder:text-gray-300 placeholder:text-body-sm" 
       />
+
+      {query && (
+        <CircleX className="absolute w-4 h-4 top-1/2 -translate-y-1/2 right-3 text-gray-300" onClick={resetSearch}/>
+      )}
     </form>
   );
 }
